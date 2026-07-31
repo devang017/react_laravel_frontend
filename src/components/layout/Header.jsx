@@ -3,13 +3,36 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
 import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../api/auth";
 
-function Header(props) {
+function Header({props}) {
+
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+
+        try {
+
+            await logout();
+
+        } catch (error) {
+
+            console.error(error);
+
+        } finally {
+
+            localStorage.removeItem("token");
+
+            navigate("/login");
+        }
+    };
+   
     return (
         <Navbar expand="lg" bg="white" className="shadow-sm py-3 border-bottom" sticky="top">
             <Container>
 
-                <Navbar.Brand href="/" className="fw-bold fs-3 text-primary">DevShop</Navbar.Brand>
+                <Navbar.Brand as={NavLink} to="/" className="fw-bold fs-3 text-primary">DevShop</Navbar.Brand>
 
                 <Navbar.Toggle aria-controls="navbar-nav" />
 
@@ -40,9 +63,9 @@ function Header(props) {
                     <div className="d-flex align-items-center gap-2">
 
                         {props.isLoggedIn && <>
-                            <Button as={NavLink} to="/login" variant="primary">
-                                Logout
-                            </Button>
+                            <Button variant="danger" onClick={handleLogout}>
+                            Logout
+                           </Button>
                         </>}
 
                         {!props.isLoggedIn && <>
