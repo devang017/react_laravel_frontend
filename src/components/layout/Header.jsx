@@ -60,7 +60,7 @@ function Header() {
 
                                 <Nav.Link
                                     as={NavLink}
-                                    to="/products"
+                                    to="/products/index"
                                     className="fw-semibold px-3"
                                 >
                                     Products
