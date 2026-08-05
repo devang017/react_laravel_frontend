@@ -4,7 +4,8 @@ import Welcome from "../pages/Welcome";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import Dashboard from "../pages/dashboard/Dashboard";
-import ProductIndex from "../pages/products/index";
+import ProductIndex  from "../pages/products/Index";
+import ProductCreate  from "../pages/products/Create";
 import ProtectedRoute from "./ProtectedRoute";
 
 function AppRoutes() {
@@ -15,19 +16,13 @@ function AppRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             {/* Protected Route */}
-            <Route path="/dashboard" element={
-                    <ProtectedRoute>
-                        <Dashboard />
-                    </ProtectedRoute>
-                }
-            />
+            <Route element={<ProtectedRoute />}>
 
-            <Route path="/products/index" element={
-                    <ProtectedRoute>
-                        <ProductIndex />
-                    </ProtectedRoute>
-                }
-            />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/products/index" element={<ProductIndex />} />
+                <Route path="/products/create" element={<ProductCreate />} />
+
+            </Route>
         </Routes>
     );
 }

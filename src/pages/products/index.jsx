@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Table, Button, Form, InputGroup, Spinner } from "react-bootstrap";
 import { getProducts } from "../../api/products";
 import CustomPagination from "../../components/CustomPagination";
+import { NavLink } from "react-router-dom";
 
 export default function Index() {
 
@@ -77,7 +78,7 @@ export default function Index() {
                 </Col>
 
                 <Col xs="auto">
-                    <Button variant="primary">
+                    <Button as={NavLink} to = '/products/create' variant="primary">
                         + Add Product
                     </Button>
                 </Col>
