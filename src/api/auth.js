@@ -7,3 +7,7 @@ export const login = async (data) => {
 export const logout = () => {
     return api.post("/logout");
 };
+
+export const register = async (data) => {
+    return await api.post("/register", data);
+};
