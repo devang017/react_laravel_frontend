@@ -134,10 +134,15 @@ export default function Create() {
                         </Form.Group>
 
                         <div className="d-flex justify-content-end gap-2">
-                            <Button as={NavLink} to="/products/index" variant="secondary">Cancel</Button>
-                            <Button variant="primary" size="lg" type="submit" disabled={loading}>
+
+                            <Button as={NavLink} to="/products/index" variant="outline-secondary">
+                                Cancel
+                            </Button>
+
+                            <Button type="submit" variant="primary" disabled={loading}>
                                 {loading ? "Saving..." : "Save Product"}
                             </Button>
+
                         </div>
                     </Form>
                 </Card.Body>
