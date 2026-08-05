@@ -2,37 +2,44 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
-import { NavLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../../api/auth";
+import { NavLink, useNavigate } from "react-router-dom";
 
-function Header({props}) {
+import { logout as logoutApi } from "../../api/auth";
+import useAuth from "../../hooks/useAuth";
+
+function Header() {
 
     const navigate = useNavigate();
 
+    const { isLoggedIn, logout } = useAuth();
+
     const handleLogout = async () => {
-
         try {
-
-            await logout();
-
+            await logoutApi();
         } catch (error) {
-
             console.error(error);
-
         } finally {
-
-            localStorage.removeItem("token");
-
+            logout(); // Removes token and updates Context
             navigate("/login");
         }
     };
-   
+
     return (
-        <Navbar expand="lg" bg="white" className="shadow-sm py-3 border-bottom" sticky="top">
+        <Navbar
+            expand="lg"
+            bg="white"
+            className="shadow-sm py-3 border-bottom"
+            sticky="top"
+        >
             <Container>
 
-                <Navbar.Brand as={NavLink} to="/" className="fw-bold fs-3 text-primary">DevShop</Navbar.Brand>
+                <Navbar.Brand
+                    as={NavLink}
+                    to="/"
+                    className="fw-bold fs-3 text-primary"
+                >
+                    DevShop
+                </Navbar.Brand>
 
                 <Navbar.Toggle aria-controls="navbar-nav" />
 
@@ -41,45 +48,62 @@ function Header({props}) {
                     {/* Left Menu */}
                     <Nav className="mx-auto">
 
-                        {/* <Nav.Link as={NavLink} to="/" className="fw-semibold px-3">
-                            Home
-                        </Nav.Link> */}
-
-                        {props.isLoggedIn &&
+                        {isLoggedIn && (
                             <>
-                                <Nav.Link as={NavLink} to="/dashboard" className="fw-semibold px-3">
+                                <Nav.Link
+                                    as={NavLink}
+                                    to="/dashboard"
+                                    className="fw-semibold px-3"
+                                >
                                     Dashboard
                                 </Nav.Link>
 
-                                <Nav.Link as={NavLink} to="/products" className="fw-semibold px-3">
+                                <Nav.Link
+                                    as={NavLink}
+                                    to="/products"
+                                    className="fw-semibold px-3"
+                                >
                                     Products
                                 </Nav.Link>
                             </>
-                        }
+                        )}
 
                     </Nav>
 
-                    {/* Right Side */}
+                    {/* Right Menu */}
                     <div className="d-flex align-items-center gap-2">
 
-                        {props.isLoggedIn && <>
-                            <Button variant="danger" onClick={handleLogout}>
-                            Logout
-                           </Button>
-                        </>}
-
-                        {!props.isLoggedIn && <>
-                            <Button as={NavLink} to="/login" variant="outline-primary">
-                                Login
+                        {isLoggedIn ? (
+                            <Button
+                                variant="danger"
+                                onClick={handleLogout}
+                            >
+                                Logout
                             </Button>
+                        ) : (
+                            <>
+                                <Button
+                                    as={NavLink}
+                                    to="/login"
+                                    variant="outline-primary"
+                                >
+                                    Login
+                                </Button>
 
-                            <Button as={NavLink} to="/register" variant="primary">
-                                Register
-                            </Button>
-                        </>}
+                                <Button
+                                    as={NavLink}
+                                    to="/register"
+                                    variant="primary"
+                                >
+                                    Register
+                                </Button>
+                            </>
+                        )}
+
                     </div>
 
                 </Navbar.Collapse>
+
             </Container>
         </Navbar>
     );

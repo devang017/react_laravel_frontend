@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../api/auth";
+import useAuth from "../../hooks/useAuth";
 
 function Login() {
     const navigate = useNavigate();
@@ -11,6 +12,7 @@ function Login() {
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const { login: authLogin } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,7 +30,7 @@ function Login() {
             console.log(response.data);
 
             // Store token
-            localStorage.setItem("token", response.data.token);
+            authLogin(response.data.token);
 
             // Redirect
             navigate("/dashboard");

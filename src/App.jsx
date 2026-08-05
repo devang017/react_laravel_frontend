@@ -5,16 +5,9 @@ import AppRoutes from './routes/AppRoutes';
 import { Container } from "react-bootstrap";
 
 function App() {
-  const token = localStorage.getItem("token");
-  const isLoggedIn = !!token;
-
-  const data = {
-    isLoggedIn: isLoggedIn
-  }
-
   return (
     <div className="d-flex flex-column min-vh-100">
-      <Header props={data} />
+      <Header/>
 
       <main className="flex-grow-1 bg-light py-4">
         <Container>
