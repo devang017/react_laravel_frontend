@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Container, Row, Col, Card, Table, Button, Form, InputGroup, Spinner } from "react-bootstrap";
-import { getProducts } from "../../api/products";
+import { getProducts, deleteProduct } from "../../api/products";
 import CustomPagination from "../../components/CustomPagination";
 import { NavLink } from "react-router-dom";
 
@@ -22,46 +22,74 @@ export default function Index() {
         to: 0,
     });
 
-    useEffect(() => {
+    const fetchProducts = useCallback(async () => {
 
-        const fetchProducts = async () => {
+        setLoading(true);
 
-            setLoading(true);
-            try {
-                const response = await getProducts({
-                    page,
-                    per_page: perPage,
-                    search,
-                    sort_by: sortBy,
-                    sort_order: sortOrder,
-                });
+        try {
 
-                const responseData = response.data.data;
+            const response = await getProducts({
+                page,
+                per_page: perPage,
+                search,
+                sort_by: sortBy,
+                sort_order: sortOrder,
+            });
 
-                setProducts(responseData.data);
+            const responseData = response.data.data;
 
-                setPagination({
-                    current_page: responseData.current_page,
-                    last_page: responseData.last_page,
-                    total: responseData.total,
-                    from: responseData.from,
-                    to: responseData.to,
-                });
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProducts();
+            setProducts(responseData.data);
+
+            setPagination({
+                current_page: responseData.current_page,
+                last_page: responseData.last_page,
+                total: responseData.total,
+                from: responseData.from,
+                to: responseData.to,
+            });
+
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+
     }, [page, perPage, search, sortBy, sortOrder]);
 
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts]);
+
     const handleSort = (column) => {
+
+        setPage(1);
+
         if (sortBy === column) {
-            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+            setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
         } else {
             setSortBy(column);
             setSortOrder("asc");
+        }
+    };
+
+    const handleDelete = async (id) => {
+
+        if (!window.confirm("Are you sure you want to delete this product?")) {
+            return;
+        }
+
+        try {
+
+            await deleteProduct(id);
+
+            if (products.length === 1 && page > 1) {
+                setPage((prev) => prev - 1);
+            } else {
+                await fetchProducts();
+            }
+
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -78,7 +106,7 @@ export default function Index() {
                 </Col>
 
                 <Col xs="auto">
-                    <Button as={NavLink} to = '/products/create' variant="primary">
+                    <Button as={NavLink} to='/products/create' variant="primary">
                         + Add Product
                     </Button>
                 </Col>
@@ -110,6 +138,10 @@ export default function Index() {
                             <tr>
                                 <th style={{ cursor: "pointer" }} onClick={() => handleSort("id")}>
                                     ID {sortBy === "id" && (sortOrder === "asc" ? "▲" : "▼")}
+                                </th>
+
+                                <th>
+                                    Image
                                 </th>
 
                                 <th style={{ cursor: "pointer" }} onClick={() => handleSort("name")}>
@@ -152,6 +184,9 @@ export default function Index() {
                                 products.map((product) => (
                                     <tr key={product.id}>
                                         <td>{product.id}</td>
+                                        <td>
+                                            <img src={product.image} alt={product.name} style={{ width: "50px", height: "50px" }} />
+                                        </td>
                                         <td>{product.name}</td>
                                         <td>₹{product.price}</td>
                                         <td>{product.quantity}</td>
@@ -161,11 +196,11 @@ export default function Index() {
                                             </span>
                                         </td>
                                         <td>
-                                            <Button size="sm" variant="warning" className="me-2">
+                                            <Button as={NavLink} to={`/products/edit/${product.id}`} size="sm" variant="warning" className="me-2">
                                                 Edit
                                             </Button>
 
-                                            <Button size="sm" variant="danger">
+                                            <Button size="sm" variant="danger" onClick={() => handleDelete(product.id)}>
                                                 Delete
                                             </Button>
                                         </td>
@@ -176,7 +211,7 @@ export default function Index() {
                     </Table>
                 </Card.Body>
                 <Card.Footer className="bg-white">
-                   <CustomPagination pagination={pagination} onPageChange={setPage}/>
+                    <CustomPagination pagination={pagination} onPageChange={setPage} />
                 </Card.Footer>
             </Card>
         </Container>

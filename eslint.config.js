@@ -18,12 +18,9 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
     rules: {
-       "react-refresh/only-export-components": [
-         "warn",
-         {
-           allowConstantExport: true,
-         },
-       ],
+       "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/set-state-in-effect": "off",
      },
   },
 ])

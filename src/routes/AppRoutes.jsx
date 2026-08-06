@@ -6,6 +6,7 @@ import Register from "../pages/auth/Register";
 import Dashboard from "../pages/dashboard/Dashboard";
 import ProductIndex  from "../pages/products/Index";
 import ProductCreate  from "../pages/products/Create";
+import ProductEdit  from "../pages/products/Edit";
 import ProtectedRoute from "./ProtectedRoute";
 
 function AppRoutes() {
@@ -21,6 +22,7 @@ function AppRoutes() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/products/index" element={<ProductIndex />} />
                 <Route path="/products/create" element={<ProductCreate />} />
+                <Route path="/products/edit/:id" element={<ProductEdit />} />
 
             </Route>
         </Routes>
